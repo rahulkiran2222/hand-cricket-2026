@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IPL 2026: Hand Cricket Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ipl-gold: #f39c12;
+            --ipl-blue: #004ba0;
+            --ipl-neon: #00f2ff;
+            --ipl-pink: #ff0055;
+            --bg-dark: #050a18;
+            --card-glass: rgba(15, 23, 42, 0.8);
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background: radial-gradient(circle at center, #1a2a6c, #b21f1f, #050a18);
+            background-attachment: fixed;
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            overflow: hidden;
+        }
+
+        /* Screen Management */
+        .screen { display: none; width: 100%; max-width: 500px; padding: 20px; text-align: center; }
+        .active { display: block; animation: fadeIn 0.5s ease; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* Modern Container */
+        .container {
+            background: var(--card-glass);
+            backdrop-filter: blur(15px);
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            padding: 2rem;
+            box-shadow: 0 0 50px rgba(0, 0, 0, 0.8), inset 0 0 20px rgba(0, 242, 255, 0.1);
+        }
+
+        h1 { font-family: 'Orbitron', sans-serif; text-transform: uppercase; letter-spacing: 2px; color: var(--ipl-neon); margin-bottom: 20px; }
+
+        /* Team Selection Buttons */
+        .team-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 20px; }
+        .team-btn {
+            background: rgba(255,255,255,0.05);
+            border: 1px solid var(--ipl-neon);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .team-btn:hover { background: var(--ipl-neon); color: black; box-shadow: 0 0 15px var(--ipl-neon); }
+
+        /* Game Board */
+        .ipl-header {
+            display: flex;
+            justify-content: space-between;
+            background: rgba(0,0,0,0.5);
+            padding: 15px;
+            border-radius: 15px;
+            margin-bottom: 20px;
+            border-bottom: 3px solid var(--ipl-gold);
+        }
+
+        .score-val { font-family: 'Orbitron', sans-serif; font-size: 1.8rem; color: var(--ipl-gold); }
+        .label { font-size: 0.8rem; color: #aaa; text-transform: uppercase; }
+
+        .game-visuals {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            margin: 30px 0;
+        }
+
+        .player-hand {
+            width: 100px;
+            height: 100px;
+            background: linear-gradient(135deg, #232526, #414345);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3rem;
+            font-family: 'Orbitron', sans-serif;
+            border: 4px solid var(--ipl-blue);
+            box-shadow: 0 0 20px rgba(0,0,0,0.5);
+        }
+
+        .vs-badge { background: var(--ipl-pink); padding: 5px 10px; border-radius: 5px; font-weight: bold; }
+
+        /* Controls */
+        .number-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; }
+        .num-btn {
+            background: #1e293b;
+            border: 1px solid #334155;
+            color: white;
+            font-size: 1.5rem;
+            padding: 20px;
+            border-radius: 15px;
+            cursor: pointer;
+            transition: 0.2s;
+            font-family: 'Orbitron', sans-serif;
+        }
+        .num-btn:hover { background: var(--ipl-blue); transform: scale(1.05); border-color: var(--ipl-neon); }
+        .num-btn:active { transform: scale(0.95); }
+
+        /* Wicket Animation */
+        .shake { animation: shake 0.5s; }
+        @keyframes shake {
+            0% { transform: translateX(0); }
+            25% { transform: translateX(-10px); }
+            50% { transform: translateX(10px); }
+            75% { transform: translateX(-10px); }
+            100% { transform: translateX(0); }
+        }
+
+        .msg-box { height: 40px; margin: 15px 0; font-weight: bold; font-size: 1.2rem; }
+    </style>
+</head>
+<body>
+
+    <!-- SCREEN 1: TEAM SELECTION -->
+    <div id="setup-screen" class="screen active container">
+        <h1>IPL 2026</h1>
+        <p>CHOOSE YOUR FRANCHISE</p>
+        <div class="team-grid">
+            <button class="team-btn" onclick="startGame('Mumbai Titans')">Mumbai Titans</button>
+            <button class="team-btn" onclick="startGame('Bangalore Royals')">Bangalore Royals</button>
+            <button class="team-btn" onclick="startGame('Chennai Kings')">Chennai Kings</button>
+            <button class="team-btn" onclick="startGame('Delhi Aces')">Delhi Aces</button>
+            <button class="team-btn" onclick="startGame('Kolkata Knights')">Kolkata Knights</button>
+            <button class="team-btn" onclick="startGame('Gujarat Lions')">Gujarat Lions</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 2: GAMEPLAY -->
+    <div id="game-screen" class="screen container">
+        <div class="ipl-header">
+            <div>
+                <div class="label" id="team-name-display">TEAM</div>
+                <div id="score" class="score-val">0</div>
+            </div>
+            <div style="text-align: right;">
+                <div class="label">Target</div>
+                <div id="target-val" class="score-val">--</div>
+            </div>
+        </div>
+
+        <div id="innings-tag" style="color: var(--ipl-gold); font-weight: bold;">1st INNINGS: YOU ARE BATTING</div>
+        <div class="msg-box" id="game-msg">Choose a number to score!</div>
+
+        <div class="game-visuals" id="visual-area">
+            <div>
+                <div id="user-pick" class="player-hand">?</div>
+                <div class="label">YOU</div>
+            </div>
+            <div class="vs-badge">VS</div>
+            <div>
+                <div id="cpu-pick" class="player-hand">?</div>
+                <div class="label">CPU</div>
+            </div>
+        </div>
+
+        <div class="number-grid">
+            <button class="num-btn" onclick="playTurn(1)">1</button>
+            <button class="num-btn" onclick="playTurn(2)">2</button>
+            <button class="num-btn" onclick="playTurn(3)">3</button>
+            <button class="num-btn" onclick="playTurn(4)">4</button>
+            <button class="num-btn" onclick="playTurn(5)">5</button>
+            <button class="num-btn" onclick="playTurn(6)">6</button>
+        </div>
+    </div>
+
+    <!-- SCREEN 3: RESULT -->
+    <div id="result-screen" class="screen container">
+        <h1 id="final-status">MATCH OVER</h1>
+        <div class="score-val" id="final-score" style="font-size: 3rem; margin: 20px 0;"></div>
+        <p id="win-msg" style="font-size: 1.5rem; color: var(--ipl-gold);"></p>
+        <button class="team-btn" style="width: 100%; margin-top: 20px;" onclick="location.reload()">NEW TOURNAMENT</button>
+    </div>
+
+    <script>
+        let score = 0;
+        let target = null;
+        let isUserBatting = true;
+        let gameActive = true;
+        let myTeam = "";
+
+        function startGame(team) {
+            myTeam = team;
+            document.getElementById('team-name-display').innerText = team;
+            document.getElementById('setup-screen').classList.remove('active');
+            document.getElementById('game-screen').classList.add('active');
+        }
+
+        function playTurn(userNum) {
+            if (!gameActive) return;
+
+            const cpuNum = Math.floor(Math.random() * 6) + 1;
+            const userHand = document.getElementById('user-pick');
+            const cpuHand = document.getElementById('cpu-pick');
+            const visualArea = document.getElementById('visual-area');
+            const msg = document.getElementById('game-msg');
+
+            userHand.innerText = userNum;
+            cpuHand.innerText = cpuNum;
+
+            if (userNum === cpuNum) {
+                // WICKET
+                visualArea.classList.add('shake');
+                setTimeout(() => visualArea.classList.remove('shake'), 500);
+                
+                if (isUserBatting) {
+                    msg.innerText = "OUT! INNINGS OVER";
+                    msg.style.color = "var(--ipl-pink)";
+                    gameActive = false;
+                    setTimeout(() => switchInnings(), 1500);
+                } else {
+                    endGame();
+                }
+            } else {
+                // RUNS SCORED
+                let addedRuns = isUserBatting ? userNum : cpuNum;
+                score += addedRuns;
+                document.getElementById('score').innerText = score;
+                msg.innerText = addedRuns + " RUNS!";
+                msg.style.color = "var(--ipl-neon)";
+
+                // Check chase
+                if (!isUserBatting && score >= target) {
+                    endGame();
+                }
+            }
+        }
+
+        function switchInnings() {
+            target = score + 1;
+            score = 0;
+            isUserBatting = false;
+            gameActive = true;
+            
+            document.getElementById('target-val').innerText = target;
+            document.getElementById('score').innerText = "0";
+            document.getElementById('innings-tag').innerText = "2nd INNINGS: CPU IS BATTING";
+            document.getElementById('game-msg').innerText = "Target is " + target + ". Stop the CPU!";
+            document.getElementById('user-pick').innerText = "?";
+            document.getElementById('cpu-pick').innerText = "?";
+        }
+
+        function endGame() {
+            gameActive = false;
+            document.getElementById('game-screen').classList.remove('active');
+            document.getElementById('result-screen').classList.add('active');
+            
+            const winMsg = document.getElementById('win-msg');
+            const finalScore = document.getElementById('final-score');
+
+            if (isUserBatting) {
+                // This scenario means CPU got out in 2nd innings
+                winMsg.innerText = myTeam + " WON BY " + (target - 1 - score) + " RUNS!";
+                finalScore.innerText = "VICTORY";
+            } else {
+                if (score >= target) {
+                    winMsg.innerText = "CPU WON THE MATCH!";
+                    finalScore.innerText = "DEFEAT";
+                    finalScore.style.color = "var(--ipl-pink)";
+                } else {
+                    winMsg.innerText = myTeam + " WON THE MATCH!";
+                    finalScore.innerText = "CHAMPIONS!";
+                }
+            }
+        }
+    </script>
+</body>
+</html>
