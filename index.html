@@ -3,15 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL 2026: SUPER OVER PRO</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;900&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <title>IPL 2026: SUPER OVER ANIMATED</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --ipl-gold: #f39c12;
-            --ipl-blue: #004ba0;
-            --ipl-neon: #00f2ff;
-            --ipl-pink: #ff0055;
-            --grass: #064e3b;
+            --team-color: #00f2ff; /* Default */
+            --stadium-glow: rgba(0, 242, 255, 0.2);
         }
 
         body {
@@ -26,337 +23,330 @@
             overflow: hidden;
         }
 
-        .game-wrapper {
+        .game-container {
             width: 100%;
-            max-width: 500px;
-            height: 90vh;
-            background: rgba(15, 23, 42, 0.95);
-            border: 2px solid var(--ipl-neon);
-            border-radius: 30px;
+            max-width: 450px;
+            height: 95vh;
+            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
+            border: 3px solid var(--team-color);
+            border-radius: 40px;
+            position: relative;
             display: flex;
             flex-direction: column;
-            position: relative;
-            box-shadow: 0 0 50px rgba(0, 242, 255, 0.2);
+            box-shadow: 0 0 40px var(--stadium-glow);
         }
 
-        /* Stadium Header */
-        .header {
+        /* TEAM SELECTION OVERLAY */
+        #team-overlay {
+            position: absolute;
+            inset: 0;
+            background: #020617;
+            z-index: 100;
+            padding: 20px;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            overflow-y: auto;
+            border-radius: 40px;
+        }
+
+        .team-card {
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid rgba(255,255,255,0.1);
+            cursor: pointer;
+            text-align: center;
+            font-weight: bold;
+            font-family: 'Orbitron';
+            transition: 0.3s;
+        }
+
+        .team-card:hover { transform: scale(1.05); }
+
+        /* HEADER */
+        .scoreboard {
             padding: 20px;
             display: flex;
             justify-content: space-between;
-            background: linear-gradient(to bottom, #004ba0, transparent);
-            border-radius: 30px 30px 0 0;
-        }
-
-        .score-box { text-align: center; }
-        .score-val { font-family: 'Orbitron'; font-size: 2rem; color: var(--ipl-gold); }
-        .target-tag { color: var(--ipl-neon); font-size: 0.8rem; }
-
-        /* Over Tracker */
-        .over-tracker {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-            padding: 10px;
-        }
-        .ball-dot {
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            background: #1e293b;
-            border: 1px solid #475569;
-            display: flex;
             align-items: center;
-            justify-content: center;
-            font-size: 0.8rem;
+            background: rgba(0,0,0,0.4);
+            border-bottom: 2px solid var(--team-color);
+            border-radius: 40px 40px 0 0;
         }
-        .ball-active { border-color: var(--ipl-gold); box-shadow: 0 0 10px var(--ipl-gold); }
 
-        /* The 3D Pitch Area */
+        .score-big { font-family: 'Orbitron'; font-size: 2rem; color: var(--team-color); }
+
+        /* STADIUM AREA */
         .stadium {
             flex-grow: 1;
             position: relative;
-            perspective: 1000px;
+            background: radial-gradient(circle at center, #166534 0%, #064e3b 100%);
+            margin: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            background: linear-gradient(to bottom, #020617, #064e3b);
+            perspective: 800px;
         }
 
         .pitch {
-            width: 150px;
-            height: 300px;
-            background: #1e3a8a;
+            width: 120px;
+            height: 100%;
+            background: #94a3b8;
             margin: 0 auto;
-            transform: rotateX(60deg);
-            box-shadow: 0 0 40px rgba(0, 242, 255, 0.3);
-            border: 2px solid rgba(255,255,255,0.2);
+            transform: rotateX(40deg);
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
             position: relative;
+            border-left: 2px solid white;
+            border-right: 2px solid white;
         }
 
-        /* The Ball Animation */
-        .ball {
-            width: 20px;
-            height: 20px;
-            background: radial-gradient(circle at 30%, #fff, #ff0055);
-            border-radius: 50%;
+        /* ANIMATED ELEMENTS */
+        #ball {
             position: absolute;
+            width: 18px;
+            height: 18px;
+            background: radial-gradient(circle at 30%, #fff, #ef4444);
+            border-radius: 50%;
             left: 50%;
-            bottom: 20%;
+            top: 10%;
             transform: translateX(-50%);
-            box-shadow: 0 0 15px #ff0055;
             display: none;
             z-index: 10;
         }
 
-        @keyframes bowlBall {
-            0% { bottom: 80%; transform: translateX(-50%) scale(0.5); opacity: 1; }
-            50% { bottom: 40%; transform: translateX(-50%) scale(1.2); }
-            100% { bottom: 10%; transform: translateX(-50%) scale(1); opacity: 0; }
-        }
-
-        .bowling { display: block; animation: bowlBall 0.8s linear forwards; }
-
-        /* Batting Action Visual */
-        .result-overlay {
+        #bat {
             position: absolute;
-            top: 40%;
-            width: 100%;
-            text-align: center;
-            font-family: 'Orbitron';
-            font-size: 3rem;
-            font-weight: 900;
-            text-shadow: 0 0 20px black;
-            pointer-events: none;
-            z-index: 20;
-            opacity: 0;
+            bottom: 15%;
+            left: 50%;
+            font-size: 50px;
+            transform: translateX(-50%) rotate(0deg);
+            transform-origin: bottom center;
+            z-index: 15;
+            transition: 0.1s;
         }
 
-        .show-result { animation: popResult 0.8s ease-out; }
-        @keyframes popResult {
-            0% { transform: scale(0); opacity: 0; }
-            50% { transform: scale(1.2); opacity: 1; }
-            100% { transform: scale(1); opacity: 0; }
+        /* ANIMATIONS */
+        @keyframes bowlAction {
+            0% { top: 10%; transform: translateX(-50%) scale(0.6); }
+            100% { top: 80%; transform: translateX(-50%) scale(1.1); }
         }
 
-        /* Control Panel */
+        @keyframes batSwing {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            50% { transform: translateX(-50%) rotate(-60deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+
+        @keyframes ballHit {
+            0% { top: 80%; transform: translateX(-50%); }
+            100% { top: -20%; transform: translateX(-150%) scale(0.2); }
+        }
+
+        .swing { animation: batSwing 0.3s ease-in-out; }
+        .bowling { display: block !important; animation: bowlAction 0.6s linear forwards; }
+        .hitted { animation: ballHit 0.6s ease-out forwards !important; }
+
+        /* OVER TRACKER */
+        .balls-row {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            padding: 10px;
+        }
+        .dot { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #334155; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
+        .dot-filled { background: var(--team-color); color: black; border-color: white; }
+
+        /* CONTROLS */
         .controls {
             padding: 20px;
-            background: #0f172a;
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             gap: 10px;
-            border-radius: 0 0 30px 30px;
         }
-
-        .btn {
+        .num-btn {
             background: #1e293b;
-            border: 2px solid var(--ipl-blue);
+            border: 2px solid var(--team-color);
             color: white;
             padding: 15px;
             font-size: 1.5rem;
             border-radius: 15px;
             font-family: 'Orbitron';
             cursor: pointer;
-            transition: 0.2s;
         }
+        .num-btn:active { transform: scale(0.9); }
 
-        .btn:hover:not(:disabled) { background: var(--ipl-blue); border-color: var(--ipl-neon); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-
-        .team-selection {
+        .result-popup {
             position: absolute;
-            inset: 0;
-            background: #020617;
-            z-index: 100;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            border-radius: 30px;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-family: 'Orbitron';
+            font-size: 4rem;
+            text-shadow: 0 0 20px black;
+            z-index: 50;
+            display: none;
         }
-
     </style>
 </head>
 <body>
 
-<div class="game-wrapper">
-    <!-- Team Selection Overlay -->
-    <div id="team-screen" class="team-selection">
-        <h1 style="font-family: 'Orbitron'; color: var(--ipl-neon);">IPL 2026</h1>
-        <h3>SELECT YOUR FRANCHISE</h3>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-            <button class="btn" onclick="initGame('MI')">MI</button>
-            <button class="btn" onclick="initGame('CSK')">CSK</button>
-            <button class="btn" onclick="initGame('RCB')">RCB</button>
-            <button class="btn" onclick="initGame('GT')">GT</button>
+<div class="game-container">
+    <!-- TEAM SELECTION -->
+    <div id="team-overlay">
+        <div style="grid-column: span 2; text-align: center;">
+            <h1 style="font-family: 'Orbitron'; color: #00f2ff;">IPL 2026 SUPER OVER</h1>
+            <p>CHOOSE YOUR TEAM</p>
+        </div>
+        <div class="team-card" style="background: #eab308; color: black;" onclick="selectTeam('CSK', '#eab308')">CSK</div>
+        <div class="team-card" style="background: #1d4ed8; color: white;" onclick="selectTeam('DC', '#1d4ed8')">DC</div>
+        <div class="team-card" style="background: #0f172a; color: #00f2ff; border: 1px solid #00f2ff;" onclick="selectTeam('GT', '#00f2ff')">GT</div>
+        <div class="team-card" style="background: #581c87; color: white;" onclick="selectTeam('KKR', '#a855f7')">KKR</div>
+        <div class="team-card" style="background: #64748b; color: white;" onclick="selectTeam('LSG', '#94a3b8')">LSG</div>
+        <div class="team-card" style="background: #0ea5e9; color: white;" onclick="selectTeam('MI', '#0ea5e9')">MI</div>
+        <div class="team-card" style="background: #ef4444; color: white;" onclick="selectTeam('PBKS', '#ef4444')">PBKS</div>
+        <div class="team-card" style="background: #db2777; color: white;" onclick="selectTeam('RR', '#db2777')">RR</div>
+        <div class="team-card" style="background: #16a34a; color: white;" onclick="selectTeam('RCB', '#16a34a')">RCB</div>
+        <div class="team-card" style="background: #f97316; color: white;" onclick="selectTeam('SRH', '#f97316')">SRH</div>
+    </div>
+
+    <!-- HEADER -->
+    <div class="scoreboard">
+        <div>
+            <div id="display-team-name" style="font-weight: bold; letter-spacing: 1px;">TEAM</div>
+            <div id="score" class="score-big">0/0</div>
+        </div>
+        <div style="text-align: right;">
+            <div style="font-size: 0.8rem; opacity: 0.7;">TARGET</div>
+            <div id="target" class="score-big" style="font-size: 1.5rem;">--</div>
         </div>
     </div>
 
-    <!-- Header Stats -->
-    <div class="header">
-        <div class="score-box">
-            <div class="label" id="team-label">TEAM</div>
-            <div id="score" class="score-val">0/0</div>
-        </div>
-        <div class="score-box">
-            <div class="target-tag" id="innings-tag">1st INNINGS</div>
-            <div class="label">TARGET: <span id="target-ui">--</span></div>
-        </div>
+    <!-- OVER TRACKER -->
+    <div class="balls-row" id="tracker">
+        <div class="dot">1</div>
+        <div class="dot">2</div>
+        <div class="dot">3</div>
+        <div class="dot">4</div>
+        <div class="dot">5</div>
+        <div class="dot">6</div>
     </div>
 
-    <!-- Over Tracker -->
-    <div class="over-tracker" id="over-ui">
-        <div class="ball-dot">1</div>
-        <div class="ball-dot">2</div>
-        <div class="ball-dot">3</div>
-        <div class="ball-dot">4</div>
-        <div class="ball-dot">5</div>
-        <div class="ball-dot">6</div>
-    </div>
-
-    <!-- 3D Pitch -->
+    <!-- STADIUM -->
     <div class="stadium">
-        <div class="result-overlay" id="flash-text">6!</div>
-        <div class="pitch">
-            <!-- Wickets -->
-            <div style="position: absolute; top: 5%; left: 45%; display: flex; gap: 4px;">
-                <div style="width: 4px; height: 30px; background: gold;"></div>
-                <div style="width: 4px; height: 30px; background: gold;"></div>
-                <div style="width: 4px; height: 30px; background: gold;"></div>
-            </div>
-            <!-- Ball -->
-            <div id="game-ball" class="ball"></div>
-        </div>
+        <div id="popup" class="result-popup">6!</div>
+        <div class="pitch"></div>
+        <div id="ball"></div>
+        <div id="bat">🏏</div>
     </div>
 
-    <div style="text-align: center; padding: 5px; font-weight: bold; color: var(--ipl-gold)" id="status-msg">
-        YOUR TURN TO BAT
-    </div>
+    <div id="status" style="text-align: center; color: var(--team-color); font-weight: bold; margin-bottom: 5px;">YOU ARE BATTING</div>
 
-    <!-- Controls -->
+    <!-- CONTROLS -->
     <div class="controls">
-        <button class="btn" onclick="handlePlay(1)">1</button>
-        <button class="btn" onclick="handlePlay(2)">2</button>
-        <button class="btn" onclick="handlePlay(3)">3</button>
-        <button class="btn" onclick="handlePlay(4)">4</button>
-        <button class="btn" onclick="handlePlay(5)">5</button>
-        <button class="btn" onclick="handlePlay(6)">6</button>
+        <button class="num-btn" onclick="play(1)">1</button>
+        <button class="num-btn" onclick="play(2)">2</button>
+        <button class="num-btn" onclick="play(3)">3</button>
+        <button class="num-btn" onclick="play(4)">4</button>
+        <button class="num-btn" onclick="play(5)">5</button>
+        <button class="num-btn" onclick="play(6)">6</button>
     </div>
 </div>
 
 <script>
-    let score = 0;
-    let wickets = 0;
-    let ballsPlayed = 0;
-    let target = null;
-    let isUserBatting = true;
-    let gameLocked = false;
-    let myTeam = "";
+    let score = 0, wickets = 0, balls = 0, target = null, isUserBatting = true, locked = false;
 
-    function initGame(team) {
-        myTeam = team;
-        document.getElementById('team-label').innerText = team;
-        document.getElementById('team-screen').style.display = 'none';
+    function selectTeam(name, color) {
+        document.documentElement.style.setProperty('--team-color', color);
+        document.documentElement.style.setProperty('--stadium-glow', color + '44');
+        document.getElementById('display-team-name').innerText = name;
+        document.getElementById('team-overlay').style.display = 'none';
     }
 
-    function handlePlay(userNum) {
-        if(gameLocked || ballsPlayed >= 6) return;
+    function play(userNum) {
+        if(locked || balls >= 6) return;
+        locked = true;
 
-        gameLocked = true;
         const cpuNum = Math.floor(Math.random() * 6) + 1;
-        const ball = document.getElementById('game-ball');
-        const flash = document.getElementById('flash-text');
-        const status = document.getElementById('status-msg');
+        const ball = document.getElementById('ball');
+        const bat = document.getElementById('bat');
+        const popup = document.getElementById('popup');
 
-        // Start Bowling Animation
-        ball.className = 'ball bowling';
+        // 1. Bowl Ball
+        ball.className = 'bowling';
         
         setTimeout(() => {
-            // Result logic triggered when ball "hits" the bat
-            if (userNum === cpuNum) {
-                // OUT
-                flash.innerText = "WICKET!";
-                flash.style.color = "var(--ipl-pink)";
-                wickets = 1;
-                updateOverTracker("W");
-            } else {
-                // RUNS
-                let runs = isUserBatting ? userNum : cpuNum;
-                score += runs;
-                flash.innerText = runs;
-                flash.style.color = "var(--ipl-neon)";
-                updateOverTracker(runs);
-            }
+            // 2. Swing Bat
+            bat.classList.add('swing');
 
-            flash.className = 'result-overlay show-result';
-            document.getElementById('score').innerText = `${score}/${wickets}`;
-            
-            // Cleanup for next ball
             setTimeout(() => {
-                ball.className = 'ball';
-                flash.className = 'result-overlay';
-                ballsPlayed++;
-                gameLocked = false;
-                
-                checkInningsOver();
-            }, 800);
+                // 3. Collision Logic
+                if(userNum === cpuNum) {
+                    // OUT
+                    popup.innerText = "OUT!";
+                    popup.style.color = "#ff0055";
+                    wickets = 1;
+                    updateTracker('W');
+                } else {
+                    // RUNS
+                    let runs = isUserBatting ? userNum : cpuNum;
+                    score += runs;
+                    popup.innerText = runs;
+                    popup.style.color = "white";
+                    ball.classList.add('hitted');
+                    updateTracker(runs);
+                }
 
+                popup.style.display = 'block';
+                document.getElementById('score').innerText = `${score}/${wickets}`;
+
+                setTimeout(() => {
+                    popup.style.display = 'none';
+                    ball.className = '';
+                    bat.classList.remove('swing');
+                    balls++;
+                    locked = false;
+                    checkInnings();
+                }, 800);
+
+            }, 200);
         }, 400);
     }
 
-    function updateOverTracker(val) {
-        const dots = document.querySelectorAll('.ball-dot');
-        dots[ballsPlayed].innerText = val;
-        dots[ballsPlayed].classList.add('ball-active');
+    function updateTracker(val) {
+        const dots = document.querySelectorAll('.dot');
+        dots[balls].innerText = val;
+        dots[balls].classList.add('dot-filled');
     }
 
-    function checkInningsOver() {
-        // Chase Logic
-        if(!isUserBatting && (score >= target || ballsPlayed >= 6 || wickets >= 1)) {
+    function checkInnings() {
+        if(!isUserBatting && (score >= target || balls >= 6 || wickets >= 1)) {
             endGame();
             return;
         }
 
-        // First Innings Logic
-        if(isUserBatting && (ballsPlayed >= 6 || wickets >= 1)) {
+        if(isUserBatting && (balls >= 6 || wickets >= 1)) {
             target = score + 1;
-            alert(`Innings Over! Target for CPU: ${target}`);
-            resetForSecondInnings();
+            alert("Innings Over! CPU needs " + target + " to win.");
+            isUserBatting = false;
+            score = 0; wickets = 0; balls = 0;
+            document.getElementById('score').innerText = "0/0";
+            document.getElementById('target').innerText = target;
+            document.getElementById('status').innerText = "YOU ARE BOWLING";
+            document.querySelectorAll('.dot').forEach(d => {
+                d.classList.remove('dot-filled');
+                d.innerText = Array.from(d.parentNode.children).indexOf(d) + 1;
+            });
         }
-    }
-
-    function resetForSecondInnings() {
-        score = 0;
-        wickets = 0;
-        ballsPlayed = 0;
-        isUserBatting = false;
-        document.getElementById('score').innerText = "0/0";
-        document.getElementById('target-ui').innerText = target;
-        document.getElementById('innings-tag').innerText = "2nd INNINGS";
-        document.getElementById('status-msg').innerText = "YOU ARE BOWLING!";
-        
-        const dots = document.querySelectorAll('.ball-dot');
-        dots.forEach(d => {
-            d.innerText = d.getAttribute('data-idx'); // reset labels
-            d.classList.remove('ball-active');
-            d.innerText = Array.from(dots).indexOf(d) + 1;
-        });
     }
 
     function endGame() {
-        gameLocked = true;
-        let finalMsg = "";
-        if (score >= target) {
-            finalMsg = isUserBatting ? "YOU WON! 🎉" : "CPU WON! 🤖";
+        let msg = "";
+        if(score >= target) {
+            msg = isUserBatting ? "YOU WON! 🎉" : "CPU WON! 🤖";
         } else {
-            finalMsg = isUserBatting ? "CPU WON! 🤖" : "YOU WON! 🎉";
+            msg = isUserBatting ? "CPU WON! 🤖" : "YOU WON! 🎉";
         }
-        
-        document.getElementById('status-msg').innerText = "GAME OVER";
-        setTimeout(() => {
-            alert(finalMsg);
-            location.reload();
-        }, 500);
+        alert(msg);
+        location.reload();
     }
 </script>
 
