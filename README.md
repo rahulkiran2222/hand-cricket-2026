@@ -1,6 +1,4 @@
 
-
-```markdown
 # 🏏 IPL 2026: Super Over Showdown
 
 <div align="center">
