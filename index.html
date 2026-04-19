@@ -3,350 +3,1473 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>IPL 2026: SUPER OVER ANIMATED</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+    <title>IPL 2026 — Super Over Showdown</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=Rajdhani:wght@400;500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
     <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
         :root {
-            --team-color: #00f2ff; /* Default */
-            --stadium-glow: rgba(0, 242, 255, 0.2);
+            --team-color: #00f2ff;
+            --team-color-rgb: 0, 242, 255;
+            --stadium-glow: rgba(0, 242, 255, 0.15);
+            --bg-primary: #020617;
+            --bg-secondary: #0f172a;
+            --bg-card: #1e293b;
+            --surface: rgba(255,255,255,0.05);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --danger: #ff0055;
+            --success: #22c55e;
+            --gold: #fbbf24;
         }
 
         body {
             font-family: 'Rajdhani', sans-serif;
-            background: #020617;
-            color: white;
-            margin: 0;
+            background: var(--bg-primary);
+            color: var(--text-primary);
             display: flex;
             justify-content: center;
             align-items: center;
-            height: 100vh;
+            min-height: 100vh;
             overflow: hidden;
+            position: relative;
+        }
+
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background:
+                radial-gradient(2px 2px at 20% 30%, rgba(255,255,255,0.1), transparent),
+                radial-gradient(2px 2px at 40% 70%, rgba(255,255,255,0.05), transparent),
+                radial-gradient(1px 1px at 60% 20%, rgba(255,255,255,0.08), transparent),
+                radial-gradient(1px 1px at 80% 50%, rgba(255,255,255,0.06), transparent),
+                radial-gradient(1.5px 1.5px at 10% 80%, rgba(255,255,255,0.04), transparent),
+                radial-gradient(1px 1px at 90% 10%, rgba(255,255,255,0.07), transparent);
+            animation: particleDrift 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes particleDrift {
+            0% { transform: translateY(0); }
+            100% { transform: translateY(-20px); }
         }
 
         .game-container {
             width: 100%;
-            max-width: 450px;
-            height: 95vh;
-            background: linear-gradient(180deg, #0f172a 0%, #020617 100%);
-            border: 3px solid var(--team-color);
-            border-radius: 40px;
+            max-width: 440px;
+            height: 96vh;
+            max-height: 920px;
+            background: linear-gradient(180deg, var(--bg-secondary) 0%, var(--bg-primary) 50%, #050d1a 100%);
+            border: 2px solid rgba(var(--team-color-rgb), 0.3);
+            border-radius: 36px;
             position: relative;
             display: flex;
             flex-direction: column;
-            box-shadow: 0 0 40px var(--stadium-glow);
+            box-shadow:
+                0 0 60px rgba(var(--team-color-rgb), 0.08),
+                0 0 120px rgba(var(--team-color-rgb), 0.04),
+                inset 0 1px 0 rgba(255,255,255,0.05);
+            z-index: 1;
+            overflow: hidden;
         }
 
-        /* TEAM SELECTION OVERLAY */
+        .game-container::before {
+            content: '';
+            position: absolute;
+            top: -1px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 60%;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--team-color), transparent);
+            border-radius: 50%;
+            z-index: 200;
+        }
+
+        /* ===== TEAM SELECTION ===== */
         #team-overlay {
             position: absolute;
             inset: 0;
-            background: #020617;
+            background: linear-gradient(180deg, #0a0f1e 0%, #020617 100%);
             z-index: 100;
-            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            border-radius: 36px;
+            overflow-y: auto;
+            scrollbar-width: none;
+            transition: opacity 0.5s ease;
+        }
+        #team-overlay::-webkit-scrollbar { display: none; }
+
+        .overlay-header {
+            padding: 35px 24px 15px;
+            text-align: center;
+            position: relative;
+        }
+
+        .overlay-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 40px;
+            height: 3px;
+            background: var(--team-color);
+            border-radius: 2px;
+        }
+
+        .brand-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            background: rgba(var(--team-color-rgb), 0.1);
+            border: 1px solid rgba(var(--team-color-rgb), 0.2);
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.65rem;
+            font-family: 'Orbitron', monospace;
+            letter-spacing: 3px;
+            color: var(--team-color);
+            margin-bottom: 16px;
+            text-transform: uppercase;
+        }
+
+        .brand-badge .pulse-dot {
+            width: 6px; height: 6px;
+            background: var(--team-color);
+            border-radius: 50%;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.4; transform: scale(0.7); }
+        }
+
+        .overlay-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            background: linear-gradient(135deg, #fff, var(--team-color));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            line-height: 1.2;
+        }
+
+        .overlay-subtitle {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            letter-spacing: 5px;
+            margin-top: 6px;
+        }
+
+        .overlay-prompt {
+            text-align: center;
+            padding: 24px 0 12px;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .teams-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
             gap: 10px;
-            overflow-y: auto;
-            border-radius: 40px;
+            padding: 0 20px 30px;
         }
 
         .team-card {
-            padding: 20px;
-            border-radius: 15px;
-            border: 1px solid rgba(255,255,255,0.1);
+            padding: 20px 12px;
+            border-radius: 16px;
             cursor: pointer;
             text-align: center;
-            font-weight: bold;
-            font-family: 'Orbitron';
-            transition: 0.3s;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.9rem;
+            letter-spacing: 2px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+            overflow: hidden;
+            border: 1px solid transparent;
         }
 
-        .team-card:hover { transform: scale(1.05); }
+        .team-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(255,255,255,0.12) 0%, transparent 60%);
+            pointer-events: none;
+        }
 
-        /* HEADER */
+        .team-card::after {
+            content: '';
+            position: absolute;
+            bottom: 0; left: 0; right: 0;
+            height: 2px;
+            background: rgba(255,255,255,0.3);
+            transform: scaleX(0);
+            transition: transform 0.3s;
+        }
+
+        .team-card:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 12px 40px rgba(0,0,0,0.4);
+        }
+        .team-card:hover::after { transform: scaleX(1); }
+        .team-card:active { transform: translateY(-1px) scale(0.98); }
+
+        .team-card .team-abbr { font-size: 1.1rem; display: block; }
+        .team-card .team-full {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.55rem;
+            letter-spacing: 1.5px;
+            opacity: 0.7;
+            margin-top: 4px;
+            display: block;
+            text-transform: uppercase;
+        }
+
+        /* ===== SCOREBOARD ===== */
         .scoreboard {
-            padding: 20px;
+            padding: 16px 22px 12px;
             display: flex;
             justify-content: space-between;
+            align-items: flex-start;
+            background: rgba(0,0,0,0.3);
+            border-bottom: 1px solid rgba(var(--team-color-rgb), 0.15);
+            position: relative;
+        }
+
+        .scoreboard::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 20%; right: 20%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(var(--team-color-rgb), 0.4), transparent);
+        }
+
+        .score-section { display: flex; flex-direction: column; gap: 2px; }
+
+        .team-label {
+            display: flex;
             align-items: center;
-            background: rgba(0,0,0,0.4);
-            border-bottom: 2px solid var(--team-color);
-            border-radius: 40px 40px 0 0;
+            gap: 8px;
         }
 
-        .score-big { font-family: 'Orbitron'; font-size: 2rem; color: var(--team-color); }
-
-        /* STADIUM AREA */
-        .stadium {
-            flex-grow: 1;
-            position: relative;
-            background: radial-gradient(circle at center, #166534 0%, #064e3b 100%);
-            margin: 15px;
-            border-radius: 20px;
-            overflow: hidden;
-            perspective: 800px;
-        }
-
-        .pitch {
-            width: 120px;
-            height: 100%;
-            background: #94a3b8;
-            margin: 0 auto;
-            transform: rotateX(40deg);
-            box-shadow: 0 0 50px rgba(0,0,0,0.5);
-            position: relative;
-            border-left: 2px solid white;
-            border-right: 2px solid white;
-        }
-
-        /* ANIMATED ELEMENTS */
-        #ball {
-            position: absolute;
-            width: 18px;
-            height: 18px;
-            background: radial-gradient(circle at 30%, #fff, #ef4444);
+        .team-dot {
+            width: 8px; height: 8px;
+            background: var(--team-color);
             border-radius: 50%;
-            left: 50%;
-            top: 10%;
-            transform: translateX(-50%);
-            display: none;
-            z-index: 10;
+            box-shadow: 0 0 8px rgba(var(--team-color-rgb), 0.5);
         }
 
-        #bat {
-            position: absolute;
-            bottom: 15%;
-            left: 50%;
-            font-size: 50px;
-            transform: translateX(-50%) rotate(0deg);
-            transform-origin: bottom center;
-            z-index: 15;
-            transition: 0.1s;
+        #display-team-name {
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            font-size: 0.7rem;
+            letter-spacing: 3px;
+            color: var(--text-secondary);
         }
 
-        /* ANIMATIONS */
-        @keyframes bowlAction {
-            0% { top: 10%; transform: translateX(-50%) scale(0.6); }
-            100% { top: 80%; transform: translateX(-50%) scale(1.1); }
+        .score-big {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.2rem;
+            font-weight: 900;
+            color: var(--text-primary);
+            line-height: 1;
+            letter-spacing: 2px;
         }
 
-        @keyframes batSwing {
-            0% { transform: translateX(-50%) rotate(0deg); }
-            50% { transform: translateX(-50%) rotate(-60deg); }
-            100% { transform: translateX(-50%) rotate(0deg); }
+        .overs-display {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            margin-top: 2px;
         }
 
-        @keyframes ballHit {
-            0% { top: 80%; transform: translateX(-50%); }
-            100% { top: -20%; transform: translateX(-150%) scale(0.2); }
+        .target-section { text-align: right; }
+
+        .target-label {
+            font-size: 0.6rem;
+            color: var(--text-secondary);
+            letter-spacing: 3px;
+            font-family: 'Orbitron', monospace;
         }
 
-        .swing { animation: batSwing 0.3s ease-in-out; }
-        .bowling { display: block !important; animation: bowlAction 0.6s linear forwards; }
-        .hitted { animation: ballHit 0.6s ease-out forwards !important; }
+        #target {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: rgba(var(--team-color-rgb), 0.6);
+        }
 
-        /* OVER TRACKER */
+        .need-info {
+            font-size: 0.65rem;
+            color: var(--gold);
+            font-family: 'Inter', sans-serif;
+            margin-top: 2px;
+            min-height: 14px;
+        }
+
+        /* ===== INNINGS INDICATOR ===== */
+        .innings-bar {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 7px;
+            background: rgba(var(--team-color-rgb), 0.05);
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+
+        .innings-bar .indicator-dot {
+            width: 5px; height: 5px;
+            border-radius: 50%;
+            background: var(--team-color);
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        #status {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.55rem;
+            letter-spacing: 4px;
+            color: var(--team-color);
+            text-transform: uppercase;
+        }
+
+        /* ===== OVER TRACKER ===== */
+        .tracker-container {
+            padding: 8px 20px;
+        }
+
+        .tracker-label {
+            font-size: 0.5rem;
+            color: var(--text-secondary);
+            letter-spacing: 3px;
+            text-transform: uppercase;
+            font-family: 'Orbitron', monospace;
+            margin-bottom: 6px;
+            text-align: center;
+        }
+
         .balls-row {
             display: flex;
             justify-content: center;
             gap: 8px;
-            padding: 10px;
         }
-        .dot { width: 35px; height: 35px; border-radius: 50%; border: 2px solid #334155; display: flex; align-items: center; justify-content: center; font-size: 0.8rem; font-weight: bold; }
-        .dot-filled { background: var(--team-color); color: black; border-color: white; }
 
-        /* CONTROLS */
-        .controls {
-            padding: 20px;
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 10px;
+        .dot {
+            width: 38px; height: 38px;
+            border-radius: 12px;
+            border: 1.5px solid rgba(255,255,255,0.08);
+            background: rgba(255,255,255,0.02);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: 700;
+            font-family: 'Orbitron', monospace;
+            color: rgba(255,255,255,0.15);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
         }
-        .num-btn {
-            background: #1e293b;
-            border: 2px solid var(--team-color);
-            color: white;
-            padding: 15px;
-            font-size: 1.5rem;
-            border-radius: 15px;
-            font-family: 'Orbitron';
-            cursor: pointer;
-        }
-        .num-btn:active { transform: scale(0.9); }
 
+        .dot-filled {
+            background: rgba(var(--team-color-rgb), 0.15);
+            color: var(--team-color);
+            border-color: rgba(var(--team-color-rgb), 0.4);
+            box-shadow: 0 0 15px rgba(var(--team-color-rgb), 0.1);
+            transform: scale(1.05);
+        }
+
+        .dot-wicket {
+            background: rgba(255, 0, 85, 0.15) !important;
+            color: var(--danger) !important;
+            border-color: rgba(255, 0, 85, 0.4) !important;
+            box-shadow: 0 0 15px rgba(255, 0, 85, 0.15) !important;
+        }
+
+        .dot-six {
+            background: rgba(251, 191, 36, 0.15) !important;
+            color: var(--gold) !important;
+            border-color: rgba(251, 191, 36, 0.4) !important;
+        }
+
+        .dot-four {
+            background: rgba(34, 197, 94, 0.15) !important;
+            color: var(--success) !important;
+            border-color: rgba(34, 197, 94, 0.4) !important;
+        }
+
+        /* ===== STADIUM ===== */
+        .stadium {
+            flex-grow: 1;
+            position: relative;
+            margin: 6px 15px;
+            border-radius: 20px;
+            overflow: hidden;
+            background:
+                radial-gradient(ellipse at 50% 100%, #166534 0%, #064e3b 40%, #022c22 80%);
+            box-shadow: inset 0 0 60px rgba(0,0,0,0.4);
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .stadium::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: radial-gradient(ellipse at 50% 20%, rgba(255,255,255,0.03), transparent 70%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        .boundary-ring {
+            position: absolute;
+            width: 85%; height: 90%;
+            left: 50%; top: 45%;
+            transform: translate(-50%, -50%);
+            border: 1px dashed rgba(255,255,255,0.06);
+            border-radius: 50%;
+            pointer-events: none;
+        }
+
+        .pitch {
+            width: 55px;
+            height: 55%;
+            position: absolute;
+            left: 50%; top: 25%;
+            transform: translateX(-50%) perspective(400px) rotateX(10deg);
+            background: linear-gradient(180deg, #a0855c 0%, #c4a265 50%, #a0855c 100%);
+            border-radius: 4px;
+            box-shadow: 0 0 30px rgba(0,0,0,0.3);
+        }
+
+        .pitch::before {
+            content: '';
+            position: absolute;
+            top: 5%; left: 50%;
+            transform: translateX(-50%);
+            width: 3px; height: 12%;
+            background: rgba(255,255,255,0.5);
+            border-radius: 2px;
+            box-shadow: -4px 0 0 rgba(255,255,255,0.5), 4px 0 0 rgba(255,255,255,0.5);
+        }
+
+        .pitch::after {
+            content: '';
+            position: absolute;
+            bottom: 5%; left: 50%;
+            transform: translateX(-50%);
+            width: 3px; height: 12%;
+            background: rgba(255,255,255,0.5);
+            border-radius: 2px;
+            box-shadow: -4px 0 0 rgba(255,255,255,0.5), 4px 0 0 rgba(255,255,255,0.5);
+        }
+
+        .crease-top, .crease-bottom {
+            position: absolute;
+            left: 50%; transform: translateX(-50%);
+            width: 50px; height: 1px;
+            background: rgba(255,255,255,0.15);
+        }
+        .crease-top { top: 32%; }
+        .crease-bottom { top: 68%; }
+
+        #ball {
+            position: absolute;
+            width: 16px; height: 16px;
+            background: radial-gradient(circle at 35% 35%, #fff, #ff3333, #cc0000);
+            border-radius: 50%;
+            left: 50%; top: 28%;
+            transform: translateX(-50%);
+            display: none;
+            z-index: 10;
+            box-shadow: 0 0 10px rgba(255, 50, 50, 0.4);
+        }
+
+        #bat {
+            position: absolute;
+            bottom: 18%; left: 50%;
+            font-size: 38px;
+            transform: translateX(-50%) rotate(0deg);
+            transform-origin: bottom center;
+            z-index: 15;
+            filter: drop-shadow(0 4px 8px rgba(0,0,0,0.4));
+        }
+
+        /* ===== ANIMATIONS ===== */
+        @keyframes bowlAction {
+            0% { top: 28%; transform: translateX(-50%) scale(0.5); opacity: 0.6; }
+            60% { opacity: 1; }
+            100% { top: 72%; transform: translateX(-50%) scale(1.1); }
+        }
+
+        @keyframes batSwing {
+            0% { transform: translateX(-50%) rotate(0deg); }
+            40% { transform: translateX(-50%) rotate(-55deg); }
+            100% { transform: translateX(-50%) rotate(0deg); }
+        }
+
+        @keyframes ballHitSix {
+            0% { top: 72%; transform: translateX(-50%) scale(1); opacity: 1; }
+            50% { transform: translateX(-200%) scale(0.6); opacity: 0.8; }
+            100% { top: -20%; transform: translateX(-300%) scale(0.1); opacity: 0; }
+        }
+
+        @keyframes ballHitFour {
+            0% { top: 72%; transform: translateX(-50%) scale(1); opacity: 1; }
+            100% { top: 5%; transform: translateX(150%) scale(0.4); opacity: 0.3; }
+        }
+
+        @keyframes ballHitNormal {
+            0% { top: 72%; transform: translateX(-50%) scale(1); opacity: 1; }
+            100% { top: 35%; transform: translateX(80%) scale(0.5); opacity: 0.4; }
+        }
+
+        @keyframes ballOut {
+            0% { top: 72%; transform: translateX(-50%) scale(1); }
+            30% { top: 68%; transform: translateX(-50%) scale(1.3); }
+            100% { top: 72%; transform: translateX(-50%) scale(0); opacity: 0; }
+        }
+
+        @keyframes flashBoundary {
+            0%, 100% { box-shadow: inset 0 0 60px rgba(0,0,0,0.4); }
+            50% { box-shadow: inset 0 0 80px rgba(var(--team-color-rgb), 0.25); }
+        }
+
+        @keyframes shakeStadium {
+            0%, 100% { transform: translateX(0); }
+            20% { transform: translateX(-3px); }
+            40% { transform: translateX(3px); }
+            60% { transform: translateX(-2px); }
+            80% { transform: translateX(2px); }
+        }
+
+        @keyframes popupIn {
+            0% { transform: translate(-50%, -50%) scale(0) rotate(-10deg); opacity: 0; }
+            100% { transform: translate(-50%, -50%) scale(1) rotate(0deg); opacity: 1; }
+        }
+
+        @keyframes popupOut {
+            0% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1.5); opacity: 0; }
+        }
+
+        @keyframes slideIn {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounceIn {
+            0% { transform: scale(0); }
+            60% { transform: scale(1.2); }
+            100% { transform: scale(1); }
+        }
+
+        @keyframes confetti {
+            0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+            100% { transform: translateY(-150px) rotate(720deg); opacity: 0; }
+        }
+
+        .swing { animation: batSwing 0.3s cubic-bezier(0.4, 0, 0.2, 1); }
+        .bowling { display: block !important; animation: bowlAction 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards; }
+        .hit-six { animation: ballHitSix 0.7s ease-out forwards !important; display: block !important; }
+        .hit-four { animation: ballHitFour 0.6s ease-out forwards !important; display: block !important; }
+        .hit-normal { animation: ballHitNormal 0.5s ease-out forwards !important; display: block !important; }
+        .hit-out { animation: ballOut 0.4s ease-in forwards !important; display: block !important; }
+        .flash-boundary { animation: flashBoundary 0.6s ease-in-out 2; }
+        .shake { animation: shakeStadium 0.4s ease-in-out; }
+
+        /* ===== RESULT POPUP ===== */
         .result-popup {
             position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-family: 'Orbitron';
-            font-size: 4rem;
-            text-shadow: 0 0 20px black;
+            top: 50%; left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            font-family: 'Orbitron', monospace;
+            font-size: 3rem;
+            font-weight: 900;
             z-index: 50;
             display: none;
+            text-shadow: 0 0 30px rgba(0,0,0,0.8);
+            letter-spacing: 3px;
+        }
+
+        .popup-show {
+            display: block !important;
+            animation: popupIn 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        .popup-sub {
+            position: absolute;
+            top: 50%; left: 50%;
+            transform: translate(-50%, calc(-50% + 50px));
+            font-size: 0.65rem;
+            letter-spacing: 3px;
+            color: rgba(255,255,255,0.5);
+            font-family: 'Orbitron', monospace;
+            z-index: 50;
+            display: none;
+        }
+
+        /* ===== COMMENTARY ===== */
+        .commentary-bar {
+            height: 26px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        #commentary {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.68rem;
+            color: var(--text-secondary);
+            white-space: nowrap;
+            animation: slideIn 0.4s ease;
+        }
+
+        /* ===== CONTROLS ===== */
+        .controls-container {
+            padding: 6px 16px 14px;
+        }
+
+        .controls-label {
+            font-size: 0.5rem;
+            color: var(--text-secondary);
+            letter-spacing: 4px;
+            text-transform: uppercase;
+            font-family: 'Orbitron', monospace;
+            text-align: center;
+            margin-bottom: 6px;
+        }
+
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(6, 1fr);
+            gap: 8px;
+        }
+
+        .num-btn {
+            background: linear-gradient(180deg, rgba(255,255,255,0.06) 0%, rgba(255,255,255,0.02) 100%);
+            border: 1.5px solid rgba(var(--team-color-rgb), 0.2);
+            color: var(--text-primary);
+            padding: 14px 0;
+            font-size: 1.15rem;
+            border-radius: 14px;
+            font-family: 'Orbitron', monospace;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .num-btn::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(var(--team-color-rgb), 0.15), transparent);
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .num-btn:hover::before { opacity: 1; }
+        .num-btn:hover {
+            border-color: rgba(var(--team-color-rgb), 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(var(--team-color-rgb), 0.1);
+        }
+        .num-btn:active {
+            transform: translateY(0) scale(0.95);
+            box-shadow: none;
+        }
+        .num-btn.disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        /* ===== INNINGS BREAK OVERLAY ===== */
+        .innings-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.92);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            z-index: 80;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 36px;
+            text-align: center;
+            gap: 10px;
+            padding: 30px;
+        }
+
+        .innings-overlay.show {
+            display: flex;
+            animation: fadeIn 0.4s ease;
+        }
+
+        .innings-break-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 0.65rem;
+            letter-spacing: 5px;
+            color: var(--text-secondary);
+        }
+
+        .innings-score-display {
+            font-family: 'Orbitron', monospace;
+            font-size: 3.5rem;
+            font-weight: 900;
+            color: var(--team-color);
+            line-height: 1;
+            text-shadow: 0 0 40px rgba(var(--team-color-rgb), 0.3);
+        }
+
+        .innings-target-label {
+            font-size: 0.6rem;
+            letter-spacing: 4px;
+            color: var(--text-secondary);
+            font-family: 'Orbitron', monospace;
+        }
+
+        .innings-desc {
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            max-width: 260px;
+            line-height: 1.5;
+        }
+
+        .innings-btn {
+            margin-top: 16px;
+            padding: 12px 32px;
+            background: transparent;
+            border: 1.5px solid var(--team-color);
+            border-radius: 12px;
+            color: var(--team-color);
+            font-family: 'Orbitron', monospace;
+            font-size: 0.6rem;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .innings-btn:hover {
+            background: rgba(var(--team-color-rgb), 0.1);
+            transform: translateY(-2px);
+        }
+        .innings-btn:active { transform: translateY(0); }
+
+        /* ===== END GAME MODAL ===== */
+        .modal-overlay {
+            position: absolute;
+            inset: 0;
+            background: rgba(0,0,0,0.88);
+            backdrop-filter: blur(25px);
+            -webkit-backdrop-filter: blur(25px);
+            z-index: 90;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border-radius: 36px;
+            padding: 40px;
+            text-align: center;
+            gap: 14px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+            animation: fadeIn 0.5s ease forwards;
+        }
+
+        .modal-icon {
+            font-size: 4rem;
+            animation: bounceIn 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.6rem;
+            font-weight: 900;
+            letter-spacing: 3px;
+        }
+
+        .modal-subtitle {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            max-width: 280px;
+            line-height: 1.5;
+        }
+
+        .modal-stats {
+            display: flex;
+            gap: 30px;
+            margin: 8px 0;
+        }
+
+        .modal-stat { text-align: center; }
+
+        .modal-stat-value {
+            font-family: 'Orbitron', monospace;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--team-color);
+        }
+
+        .modal-stat-label {
+            font-size: 0.55rem;
+            color: var(--text-secondary);
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            font-family: 'Inter', sans-serif;
+            margin-top: 2px;
+        }
+
+        .modal-btn {
+            margin-top: 8px;
+            padding: 14px 40px;
+            background: linear-gradient(135deg, var(--team-color), rgba(var(--team-color-rgb), 0.7));
+            border: none;
+            border-radius: 14px;
+            color: #000;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.7rem;
+            font-weight: 700;
+            letter-spacing: 3px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(var(--team-color-rgb), 0.3);
+        }
+        .modal-btn:active { transform: translateY(0); }
+
+        /* ===== CONFETTI PARTICLES ===== */
+        .confetti-piece {
+            position: absolute;
+            width: 8px;
+            height: 8px;
+            border-radius: 2px;
+            animation: confettiFall 2.5s ease-out forwards;
+            pointer-events: none;
+            z-index: 95;
+        }
+
+        @keyframes confettiFall {
+            0% { transform: translateY(0) rotate(0deg) scale(1); opacity: 1; }
+            100% { transform: translateY(500px) rotate(720deg) scale(0.3); opacity: 0; }
+        }
+
+        /* ===== RESPONSIVE ===== */
+        @media (max-height: 750px) {
+            .score-big { font-size: 1.9rem; }
+            .num-btn { padding: 10px 0; font-size: 1rem; }
+            .dot { width: 32px; height: 32px; font-size: 0.6rem; }
+            .overlay-header { padding-top: 20px; }
+            #bat { font-size: 32px; }
+        }
+
+        @media (max-height: 650px) {
+            .tracker-container { padding: 4px 20px; }
+            .innings-bar { padding: 4px; }
+            .controls-container { padding: 4px 16px 8px; }
+            .stadium { margin: 4px 12px; }
+            .commentary-bar { height: 20px; }
         }
     </style>
 </head>
 <body>
 
 <div class="game-container">
-    <!-- TEAM SELECTION -->
+
+    <!-- ===== TEAM SELECTION ===== -->
     <div id="team-overlay">
-        <div style="grid-column: span 2; text-align: center;">
-            <h1 style="font-family: 'Orbitron'; color: #00f2ff;">IPL 2026 SUPER OVER</h1>
-            <p>CHOOSE YOUR TEAM</p>
+        <div class="overlay-header">
+            <div class="brand-badge">
+                <span class="pulse-dot"></span>
+                SEASON 2026
+            </div>
+            <div class="overlay-title">SUPER OVER</div>
+            <div class="overlay-subtitle">SHOWDOWN</div>
         </div>
-        <div class="team-card" style="background: #eab308; color: black;" onclick="selectTeam('CSK', '#eab308')">CSK</div>
-        <div class="team-card" style="background: #1d4ed8; color: white;" onclick="selectTeam('DC', '#1d4ed8')">DC</div>
-        <div class="team-card" style="background: #0f172a; color: #00f2ff; border: 1px solid #00f2ff;" onclick="selectTeam('GT', '#00f2ff')">GT</div>
-        <div class="team-card" style="background: #581c87; color: white;" onclick="selectTeam('KKR', '#a855f7')">KKR</div>
-        <div class="team-card" style="background: #64748b; color: white;" onclick="selectTeam('LSG', '#94a3b8')">LSG</div>
-        <div class="team-card" style="background: #0ea5e9; color: white;" onclick="selectTeam('MI', '#0ea5e9')">MI</div>
-        <div class="team-card" style="background: #ef4444; color: white;" onclick="selectTeam('PBKS', '#ef4444')">PBKS</div>
-        <div class="team-card" style="background: #db2777; color: white;" onclick="selectTeam('RR', '#db2777')">RR</div>
-        <div class="team-card" style="background: #16a34a; color: white;" onclick="selectTeam('RCB', '#16a34a')">RCB</div>
-        <div class="team-card" style="background: #f97316; color: white;" onclick="selectTeam('SRH', '#f97316')">SRH</div>
+        <div class="overlay-prompt">Select Your Franchise</div>
+        <div class="teams-grid">
+            <div class="team-card" style="background: linear-gradient(135deg, #ca8a04, #eab308); color: #000;" onclick="selectTeam('CSK', '#eab308', 'Chennai Super Kings', '234,179,8')">
+                <span class="team-abbr">CSK</span>
+                <span class="team-full">Chennai Super Kings</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #1e3a8a, #2563eb); color: #fff;" onclick="selectTeam('DC', '#2563eb', 'Delhi Capitals', '37,99,235')">
+                <span class="team-abbr">DC</span>
+                <span class="team-full">Delhi Capitals</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #0c4a6e, #0891b2); color: #fff;" onclick="selectTeam('GT', '#06b6d4', 'Gujarat Titans', '6,182,212')">
+                <span class="team-abbr">GT</span>
+                <span class="team-full">Gujarat Titans</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #581c87, #7c3aed); color: #fff;" onclick="selectTeam('KKR', '#a855f7', 'Kolkata Knight Riders', '168,85,247')">
+                <span class="team-abbr">KKR</span>
+                <span class="team-full">Kolkata Knight Riders</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #334155, #64748b); color: #fff;" onclick="selectTeam('LSG', '#94a3b8', 'Lucknow Super Giants', '148,163,184')">
+                <span class="team-abbr">LSG</span>
+                <span class="team-full">Lucknow Super Giants</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #075985, #0284c7); color: #fff;" onclick="selectTeam('MI', '#0ea5e9', 'Mumbai Indians', '14,165,233')">
+                <span class="team-abbr">MI</span>
+                <span class="team-full">Mumbai Indians</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #991b1b, #dc2626); color: #fff;" onclick="selectTeam('PBKS', '#ef4444', 'Punjab Kings', '239,68,68')">
+                <span class="team-abbr">PBKS</span>
+                <span class="team-full">Punjab Kings</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #9d174d, #ec4899); color: #fff;" onclick="selectTeam('RR', '#ec4899', 'Rajasthan Royals', '236,72,153')">
+                <span class="team-abbr">RR</span>
+                <span class="team-full">Rajasthan Royals</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #14532d, #16a34a); color: #fff;" onclick="selectTeam('RCB', '#22c55e', 'Royal Challengers', '34,197,94')">
+                <span class="team-abbr">RCB</span>
+                <span class="team-full">Royal Challengers</span>
+            </div>
+            <div class="team-card" style="background: linear-gradient(135deg, #9a3412, #ea580c); color: #fff;" onclick="selectTeam('SRH', '#f97316', 'Sunrisers Hyderabad', '249,115,22')">
+                <span class="team-abbr">SRH</span>
+                <span class="team-full">Sunrisers Hyderabad</span>
+            </div>
+        </div>
     </div>
 
-    <!-- HEADER -->
+    <!-- ===== HEADER ===== -->
     <div class="scoreboard">
-        <div>
-            <div id="display-team-name" style="font-weight: bold; letter-spacing: 1px;">TEAM</div>
+        <div class="score-section">
+            <div class="team-label">
+                <div class="team-dot"></div>
+                <div id="display-team-name">TEAM</div>
+            </div>
             <div id="score" class="score-big">0/0</div>
+            <div class="overs-display">Overs: <span id="overs-count">0.0</span> / 1.0</div>
         </div>
-        <div style="text-align: right;">
-            <div style="font-size: 0.8rem; opacity: 0.7;">TARGET</div>
-            <div id="target" class="score-big" style="font-size: 1.5rem;">--</div>
+        <div class="target-section">
+            <div class="target-label">TARGET</div>
+            <div id="target">—</div>
+            <div class="need-info" id="need-info"></div>
         </div>
     </div>
 
-    <!-- OVER TRACKER -->
-    <div class="balls-row" id="tracker">
-        <div class="dot">1</div>
-        <div class="dot">2</div>
-        <div class="dot">3</div>
-        <div class="dot">4</div>
-        <div class="dot">5</div>
-        <div class="dot">6</div>
+    <!-- ===== INNINGS INDICATOR ===== -->
+    <div class="innings-bar">
+        <div class="indicator-dot"></div>
+        <div id="status">1ST INNINGS · YOU BAT</div>
     </div>
 
-    <!-- STADIUM -->
-    <div class="stadium">
-        <div id="popup" class="result-popup">6!</div>
+    <!-- ===== OVER TRACKER ===== -->
+    <div class="tracker-container">
+        <div class="tracker-label">This Over</div>
+        <div class="balls-row" id="tracker">
+            <div class="dot">1</div>
+            <div class="dot">2</div>
+            <div class="dot">3</div>
+            <div class="dot">4</div>
+            <div class="dot">5</div>
+            <div class="dot">6</div>
+        </div>
+    </div>
+
+    <!-- ===== STADIUM ===== -->
+    <div class="stadium" id="stadium">
+        <div class="boundary-ring"></div>
+        <div id="popup" class="result-popup"></div>
+        <div id="popup-sub" class="popup-sub"></div>
         <div class="pitch"></div>
+        <div class="crease-top"></div>
+        <div class="crease-bottom"></div>
         <div id="ball"></div>
         <div id="bat">🏏</div>
     </div>
 
-    <div id="status" style="text-align: center; color: var(--team-color); font-weight: bold; margin-bottom: 5px;">YOU ARE BATTING</div>
+    <!-- ===== COMMENTARY ===== -->
+    <div class="commentary-bar">
+        <div id="commentary">Pick a number to play your shot...</div>
+    </div>
 
-    <!-- CONTROLS -->
-    <div class="controls">
-        <button class="num-btn" onclick="play(1)">1</button>
-        <button class="num-btn" onclick="play(2)">2</button>
-        <button class="num-btn" onclick="play(3)">3</button>
-        <button class="num-btn" onclick="play(4)">4</button>
-        <button class="num-btn" onclick="play(5)">5</button>
-        <button class="num-btn" onclick="play(6)">6</button>
+    <!-- ===== CONTROLS ===== -->
+    <div class="controls-container">
+        <div class="controls-label">Pick Your Number</div>
+        <div class="controls" id="controls">
+            <button class="num-btn" onclick="play(1)">1</button>
+            <button class="num-btn" onclick="play(2)">2</button>
+            <button class="num-btn" onclick="play(3)">3</button>
+            <button class="num-btn" onclick="play(4)">4</button>
+            <button class="num-btn" onclick="play(5)">5</button>
+            <button class="num-btn" onclick="play(6)">6</button>
+        </div>
+    </div>
+
+    <!-- ===== INNINGS BREAK ===== -->
+    <div class="innings-overlay" id="innings-overlay">
+        <div class="innings-break-title">INNINGS BREAK</div>
+        <div class="innings-score-display" id="innings-score-display">0</div>
+        <div class="innings-target-label">RUNS SCORED</div>
+        <p class="innings-desc">
+            CPU needs <span id="innings-need" style="color: var(--team-color); font-weight: 700;">0</span> runs in 6 balls to win. Time to defend!
+        </p>
+        <button class="innings-btn" onclick="startSecondInnings()">START BOWLING →</button>
+    </div>
+
+    <!-- ===== END GAME MODAL ===== -->
+    <div class="modal-overlay" id="modal">
+        <div class="modal-icon" id="modal-icon">🏆</div>
+        <div class="modal-title" id="modal-title">YOU WON!</div>
+        <div class="modal-subtitle" id="modal-subtitle">Incredible performance under pressure.</div>
+        <div class="modal-stats">
+            <div class="modal-stat">
+                <div class="modal-stat-value" id="stat-your">0</div>
+                <div class="modal-stat-label">Your Score</div>
+            </div>
+            <div class="modal-stat">
+                <div class="modal-stat-value" id="stat-cpu">0</div>
+                <div class="modal-stat-label">CPU Score</div>
+            </div>
+        </div>
+        <button class="modal-btn" onclick="location.reload()">PLAY AGAIN</button>
     </div>
 </div>
 
 <script>
-    let score = 0, wickets = 0, balls = 0, target = null, isUserBatting = true, locked = false;
+    // ===== GAME STATE =====
+    const state = {
+        score: 0,
+        wickets: 0,
+        balls: 0,
+        target: null,
+        isUserBatting: true,
+        locked: false,
+        userFirstInningsScore: 0,
+        userFirstInningsWickets: 0,
+        teamName: '',
+        teamColor: '',
+        teamRGB: '',
+        history: []
+    };
 
-    function selectTeam(name, color) {
-        document.documentElement.style.setProperty('--team-color', color);
-        document.documentElement.style.setProperty('--stadium-glow', color + '44');
-        document.getElementById('display-team-name').innerText = name;
-        document.getElementById('team-overlay').style.display = 'none';
+    // ===== COMMENTARY DATABASE =====
+    const commentaryLines = {
+        1: [
+            "Quick single taken! Smart cricket.",
+            "Pushed into the gap for one.",
+            "Good rotation of strike, one run.",
+            "Nudged off the pads for a single."
+        ],
+        2: [
+            "Good placement! Two runs taken.",
+            "Turned for two, excellent running!",
+            "Splits the fielders, easy two.",
+            "Well judged two runs there."
+        ],
+        3: [
+            "Superb running! Three taken!",
+            "Finds the gap, three runs!",
+            "Great effort between the wickets — three!",
+            "Misfield at the boundary, they get three!"
+        ],
+        4: [
+            "FOUR! Racing to the boundary! 🔥",
+            "SHOT! Pierces the field, FOUR!",
+            "Cracking drive, that's a BOUNDARY!",
+            "Timed to perfection — FOUR RUNS!"
+        ],
+        5: [
+            "FIVE! Overthrow adds to the boundary!",
+            "Incredible! Misfield and they run five!",
+            "Five runs! Chaos in the field!",
+            "A rare five — what an over this is!"
+        ],
+        6: [
+            "SIX! Into the stands! 💥",
+            "MASSIVE! That's gone all the way!",
+            "SIX! Unbelievable power hitting!",
+            "Out of the ground! MAXIMUM!",
+            "What a shot! SIX RUNS! 🎆"
+        ],
+        out: [
+            "BOWLED HIM! Timber! 🪵",
+            "OUT! What a delivery! Clean bowled!",
+            "GONE! The stumps are shattered!",
+            "WICKET! That changes everything!",
+            "Same number! That's OUT!"
+        ],
+        bowling1: [
+            "CPU sneaks a single. Keep it tight!",
+            "One run conceded. Stay focused.",
+            "CPU pushes for one. Good length."
+        ],
+        bowling2: [
+            "Two runs conceded. Tighten the line!",
+            "CPU finds the gap for two.",
+            "Couple of runs there. Keep bowling."
+        ],
+        bowling3: [
+            "Three conceded! Pressure building.",
+            "CPU running hard, three taken!",
+            "Misfield! They get three."
+        ],
+        bowling4: [
+            "FOUR conceded! CPU finds the fence!",
+            "Boundary! CPU is attacking now!",
+            "That's raced away for FOUR!"
+        ],
+        bowling5: [
+            "FIVE! Overthrow! That's costly!",
+            "Fielding error — five conceded!",
+            "Five runs! Pressure is on!"
+        ],
+        bowling6: [
+            "SIX! CPU launches it huge!",
+            "MAXIMUM by CPU! Big trouble!",
+            "That's a massive SIX from CPU!"
+        ],
+        bowlingOut: [
+            "WICKET! You got him! 🎯",
+            "BOWLED! Same number — OUT!",
+            "CLEAN BOWLED! What a delivery!",
+            "That's the wicket! Incredible bowling!"
+        ]
+    };
+
+    // ===== HELPER: RANDOM FROM ARRAY =====
+    function randomFrom(arr) {
+        return arr[Math.floor(Math.random() * arr.length)];
     }
 
+    // ===== HELPER: GET COMMENTARY =====
+    function getCommentary(runs, isOut) {
+        if (state.isUserBatting) {
+            if (isOut) return randomFrom(commentaryLines.out);
+            return randomFrom(commentaryLines[runs] || commentaryLines[1]);
+        } else {
+            if (isOut) return randomFrom(commentaryLines.bowlingOut);
+            const key = 'bowling' + runs;
+            return randomFrom(commentaryLines[key] || commentaryLines['bowling1']);
+        }
+    }
+
+    // ===== TEAM SELECTION =====
+    function selectTeam(name, color, fullName, rgb) {
+        document.documentElement.style.setProperty('--team-color', color);
+        document.documentElement.style.setProperty('--team-color-rgb', rgb);
+        document.documentElement.style.setProperty('--stadium-glow', `rgba(${rgb}, 0.15)`);
+        document.getElementById('display-team-name').innerText = name;
+        state.teamName = name;
+        state.teamColor = color;
+        state.teamRGB = rgb;
+
+        const overlay = document.getElementById('team-overlay');
+        overlay.style.opacity = '0';
+        setTimeout(() => { overlay.style.display = 'none'; }, 500);
+    }
+
+    // ===== DISABLE/ENABLE BUTTONS =====
+    function disableButtons(disable) {
+        document.querySelectorAll('.num-btn').forEach(btn => {
+            if (disable) btn.classList.add('disabled');
+            else btn.classList.remove('disabled');
+        });
+    }
+
+    // ===== UPDATE COMMENTARY =====
+    function updateCommentary(text) {
+        const el = document.getElementById('commentary');
+        el.style.animation = 'none';
+        void el.offsetHeight;
+        el.style.animation = 'slideIn 0.4s ease';
+        el.innerText = text;
+    }
+
+    // ===== UPDATE TRACKER =====
+    function updateTracker(val, isWicket) {
+        const dots = document.querySelectorAll('.dot');
+        if (state.balls < dots.length) {
+            dots[state.balls].innerText = val;
+            dots[state.balls].classList.add('dot-filled');
+            if (isWicket) {
+                dots[state.balls].classList.add('dot-wicket');
+            } else if (val >= 6) {
+                dots[state.balls].classList.add('dot-six');
+            } else if (val >= 4) {
+                dots[state.balls].classList.add('dot-four');
+            }
+        }
+    }
+
+    // ===== UPDATE NEED INFO =====
+    function updateNeedInfo() {
+        const el = document.getElementById('need-info');
+        if (!state.isUserBatting && state.target) {
+            const need = state.target - state.score;
+            const ballsLeft = 6 - state.balls;
+            if (need > 0 && ballsLeft > 0) {
+                el.innerText = `Need ${need} off ${ballsLeft} ball${ballsLeft > 1 ? 's' : ''}`;
+            } else if (need <= 0) {
+                el.innerText = 'Target achieved!';
+            } else {
+                el.innerText = '';
+            }
+        } else {
+            el.innerText = '';
+        }
+    }
+
+    // ===== RESET TRACKER =====
+    function resetTracker() {
+        document.querySelectorAll('.dot').forEach((d, i) => {
+            d.className = 'dot';
+            d.innerText = i + 1;
+        });
+    }
+
+    // ===== SPAWN CONFETTI =====
+    function spawnConfetti() {
+        const container = document.getElementById('modal');
+        const colors = ['#ff0055', '#00f2ff', '#fbbf24', '#22c55e', '#a855f7', '#0ea5e9', '#ef4444', '#ec4899'];
+        for (let i = 0; i < 40; i++) {
+            const piece = document.createElement('div');
+            piece.classList.add('confetti-piece');
+            piece.style.left = Math.random() * 100 + '%';
+            piece.style.top = '-10px';
+            piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+            piece.style.animationDelay = Math.random() * 1 + 's';
+            piece.style.animationDuration = (2 + Math.random() * 1.5) + 's';
+            piece.style.width = (5 + Math.random() * 6) + 'px';
+            piece.style.height = (5 + Math.random() * 6) + 'px';
+            piece.style.borderRadius = Math.random() > 0.5 ? '50%' : '2px';
+            container.appendChild(piece);
+        }
+        setTimeout(() => {
+            document.querySelectorAll('.confetti-piece').forEach(p => p.remove());
+        }, 4000);
+    }
+
+    // ===== MAIN PLAY FUNCTION =====
     function play(userNum) {
-        if(locked || balls >= 6) return;
-        locked = true;
+        if (state.locked || state.balls >= 6) return;
+        state.locked = true;
+        disableButtons(true);
 
         const cpuNum = Math.floor(Math.random() * 6) + 1;
         const ball = document.getElementById('ball');
         const bat = document.getElementById('bat');
         const popup = document.getElementById('popup');
+        const popupSub = document.getElementById('popup-sub');
+        const stadium = document.getElementById('stadium');
 
-        // 1. Bowl Ball
-        ball.className = 'bowling';
-        
+        // Reset ball state
+        ball.className = '';
+        ball.style.display = 'none';
+
+        // Step 1: Bowl animation
+        void ball.offsetHeight;
+        ball.classList.add('bowling');
+
         setTimeout(() => {
-            // 2. Swing Bat
+            // Step 2: Bat swing
             bat.classList.add('swing');
 
             setTimeout(() => {
-                // 3. Collision Logic
-                if(userNum === cpuNum) {
-                    // OUT
-                    popup.innerText = "OUT!";
-                    popup.style.color = "#ff0055";
-                    wickets = 1;
-                    updateTracker('W');
+                const isOut = userNum === cpuNum;
+
+                if (isOut) {
+                    // ===== OUT =====
+                    state.wickets = 1;
+                    ball.className = 'hit-out';
+                    popup.innerText = 'OUT!';
+                    popup.style.color = 'var(--danger)';
+                    popupSub.innerText = `You: ${userNum} · CPU: ${cpuNum}`;
+                    stadium.classList.add('shake');
+                    updateTracker('W', true);
+                    updateCommentary(getCommentary(0, true));
                 } else {
-                    // RUNS
-                    let runs = isUserBatting ? userNum : cpuNum;
-                    score += runs;
-                    popup.innerText = runs;
-                    popup.style.color = "white";
-                    ball.classList.add('hitted');
-                    updateTracker(runs);
+                    // ===== RUNS =====
+                    let runs = state.isUserBatting ? userNum : cpuNum;
+                    state.score += runs;
+
+                    if (runs >= 6) {
+                        ball.className = 'hit-six';
+                        stadium.classList.add('flash-boundary');
+                        popup.innerText = 'SIX!';
+                        popup.style.color = 'var(--gold)';
+                    } else if (runs >= 4) {
+                        ball.className = 'hit-four';
+                        stadium.classList.add('flash-boundary');
+                        popup.innerText = 'FOUR!';
+                        popup.style.color = 'var(--success)';
+                    } else {
+                        ball.className = 'hit-normal';
+                        popup.innerText = runs;
+                        popup.style.color = 'white';
+                    }
+
+                    popupSub.innerText = `You: ${userNum} · CPU: ${cpuNum}`;
+                    updateTracker(runs, false);
+                    updateCommentary(getCommentary(runs, false));
                 }
 
-                popup.style.display = 'block';
-                document.getElementById('score').innerText = `${score}/${wickets}`;
+                // Show popup
+                popup.classList.add('popup-show');
+                popupSub.style.display = 'block';
 
+                // Update score display
+                document.getElementById('score').innerText = `${state.score}/${state.wickets}`;
+
+                // Update overs
+                state.balls++;
+                const oversDisplay = state.balls < 6 ? `0.${state.balls}` : '1.0';
+                document.getElementById('overs-count').innerText = oversDisplay;
+
+                // Update need info
+                updateNeedInfo();
+
+                // Store history
+                state.history.push(isOut ? 'W' : (state.isUserBatting ? userNum : cpuNum));
+
+                // Cleanup and check
                 setTimeout(() => {
+                    popup.classList.remove('popup-show');
                     popup.style.display = 'none';
+                    popupSub.style.display = 'none';
                     ball.className = '';
+                    ball.style.display = 'none';
                     bat.classList.remove('swing');
-                    balls++;
-                    locked = false;
+                    stadium.classList.remove('flash-boundary', 'shake');
+
+                    state.locked = false;
+                    disableButtons(false);
                     checkInnings();
-                }, 800);
+                }, 1100);
 
-            }, 200);
-        }, 400);
+            }, 250);
+        }, 450);
     }
 
-    function updateTracker(val) {
-        const dots = document.querySelectorAll('.dot');
-        dots[balls].innerText = val;
-        dots[balls].classList.add('dot-filled');
-    }
-
+    // ===== CHECK INNINGS =====
     function checkInnings() {
-        if(!isUserBatting && (score >= target || balls >= 6 || wickets >= 1)) {
-            endGame();
+        // Second innings end conditions
+        if (!state.isUserBatting) {
+            if (state.score >= state.target) {
+                // CPU won — chased the target
+                endGame(false);
+                return;
+            }
+            if (state.balls >= 6 || state.wickets >= 1) {
+                // CPU failed to chase
+                endGame(true);
+                return;
+            }
             return;
         }
 
-        if(isUserBatting && (balls >= 6 || wickets >= 1)) {
-            target = score + 1;
-            alert("Innings Over! CPU needs " + target + " to win.");
-            isUserBatting = false;
-            score = 0; wickets = 0; balls = 0;
-            document.getElementById('score').innerText = "0/0";
-            document.getElementById('target').innerText = target;
-            document.getElementById('status').innerText = "YOU ARE BOWLING";
-            document.querySelectorAll('.dot').forEach(d => {
-                d.classList.remove('dot-filled');
-                d.innerText = Array.from(d.parentNode.children).indexOf(d) + 1;
-            });
+        // First innings end
+        if (state.isUserBatting && (state.balls >= 6 || state.wickets >= 1)) {
+            state.userFirstInningsScore = state.score;
+            state.userFirstInningsWickets = state.wickets;
+            state.target = state.score + 1;
+
+            // Show innings overlay
+            document.getElementById('innings-score-display').innerText = state.score;
+            document.getElementById('innings-need').innerText = state.target;
+            document.getElementById('innings-overlay').classList.add('show');
+            disableButtons(true);
         }
     }
 
-    function endGame() {
-        let msg = "";
-        if(score >= target) {
-            msg = isUserBatting ? "YOU WON! 🎉" : "CPU WON! 🤖";
+    // ===== START SECOND INNINGS =====
+    function startSecondInnings() {
+        document.getElementById('innings-overlay').classList.remove('show');
+
+        state.isUserBatting = false;
+        state.score = 0;
+        state.wickets = 0;
+        state.balls = 0;
+        state.history = [];
+
+        document.getElementById('score').innerText = '0/0';
+        document.getElementById('target').innerText = state.target;
+        document.getElementById('overs-count').innerText = '0.0';
+        document.getElementById('status').innerText = '2ND INNINGS · YOU BOWL';
+        updateCommentary('CPU is batting. Pick wisely to bowl them out!');
+        updateNeedInfo();
+        resetTracker();
+        disableButtons(false);
+    }
+
+    // ===== END GAME =====
+    function endGame(userWon) {
+        disableButtons(true);
+        state.locked = true;
+
+        const modal = document.getElementById('modal');
+        const cpuFinalScore = state.score;
+        const cpuFinalWickets = state.wickets;
+
+        if (userWon) {
+            document.getElementById('modal-icon').innerText = '🏆';
+            document.getElementById('modal-title').innerText = 'VICTORY!';
+            document.getElementById('modal-title').style.color = 'var(--gold)';
+
+            const margin = state.target - 1 - cpuFinalScore;
+            let subtitle = 'Brilliant defense! You held your nerve.';
+            if (cpuFinalWickets >= 1) {
+                subtitle = `Clean bowled! CPU was ${state.target - 1 - cpuFinalScore} runs short. Dominant bowling!`;
+            } else if (margin >= 10) {
+                subtitle = `Dominant victory! CPU fell ${margin} runs short.`;
+            } else if (margin <= 3) {
+                subtitle = `Nail-biter! Defended by just ${margin} run${margin > 1 ? 's' : ''}! 😮‍💨`;
+            } else {
+                subtitle = `Solid defense! CPU needed ${state.target} but only managed ${cpuFinalScore}.`;
+            }
+            document.getElementById('modal-subtitle').innerText = subtitle;
         } else {
-            msg = isUserBatting ? "CPU WON! 🤖" : "YOU WON! 🎉";
+            document.getElementById('modal-icon').innerText = '😤';
+            document.getElementById('modal-title').innerText = 'DEFEATED';
+            document.getElementById('modal-title').style.color = 'var(--danger)';
+
+            const ballsUsed = state.balls;
+            let subtitle = 'CPU chased it down. Better luck next time!';
+            if (ballsUsed <= 3) {
+                subtitle = `CPU smashed it in just ${ballsUsed} balls! Ruthless. 💀`;
+            } else if (ballsUsed === 6) {
+                subtitle = 'CPU chased it on the last ball! Heartbreaking.';
+            } else {
+                subtitle = `CPU reached the target with ${6 - ballsUsed} ball${6 - ballsUsed > 1 ? 's' : ''} to spare.`;
+            }
+            document.getElementById('modal-subtitle').innerText = subtitle;
         }
-        alert(msg);
-        location.reload();
+
+        document.getElementById('stat-your').innerText = `${state.userFirstInningsScore}/${state.userFirstInningsWickets}`;
+        document.getElementById('stat-cpu').innerText = `${cpuFinalScore}/${cpuFinalWickets}`;
+
+        setTimeout(() => {
+            modal.classList.add('show');
+            if (userWon) {
+                spawnConfetti();
+            }
+        }, 700);
     }
 </script>
 
