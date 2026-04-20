@@ -11,7 +11,7 @@
 
 **A fully animated, mobile-first cricket Super Over game built entirely with vanilla HTML, CSS & JavaScript.**
 
-[Play Now](#getting-started) · [Features](#features) · [How It Works](#how-it-works) · [Screenshots](#screenshots) · [Contributing](#contributing)
+[Play Now](#getting-started) · [Features](#features) · [How It Works](#how-it-works) · [Screenshots] · [Contributing](#contributing)
 
 ---
 
